@@ -1,0 +1,98 @@
+// Inporting partials to manage separations.
+@import './resets';
+@import './variables';
+
+// Function block in SASS.
+// Parameters convention is the same with variables starting with dollar sign ($).
+// Function and Mixin are essentially the same, but you would expect to COMPUTE AND RETURN a value when using functions.
+@function weights($name) {
+  @return map-get($font-weights, $name);
+}
+// Mixin is a reusable chunks of code that will straightly included to the code block that calls it.
+@mixin flexCenter($direction) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: center;
+  align-items: center;
+}
+// Mixin with default parameter value.
+@mixin light($light-theme: true) {
+  // IF block in SASS.
+  // If the given argument is 'false'. Then the mixin won't include anything maening that there wont be ~
+  // ~ any code within a code block that includes it.
+  @if $light-theme {
+    background-color: lighten($primary-color, 100%);
+    color: darken($text-color, 100%);
+  }
+}
+// Mixin with contents. Providing a content block alongside mixin call will include that block ~
+// ~ into the presented block from the mixin, in this case a media query.
+@mixin mobile {
+  @media screen and (max-width: $mobileWidth) {
+    @content;
+  }
+}
+
+body {
+  background-color: $primary-color;
+  color: $text-color;
+}
+
+.main {
+  // Including a mixin. Remember that mixin behaves like normal rules because it just embeds that chunk ~
+  // ~ of mixin code into your code block.
+  @include flexCenter(row);
+  // Usual CSS calculation.
+  // width: calc(80% - 400px);
+  // SASS calculation. Note that the units have to be the same unlike CSS calc function where you can ~
+  // different units.
+  width: 80% - 40%;
+  margin: 0 auto;
+
+  // Nesting and naming convention to follow parent's base name.
+  // This will be parsed as '.main-paragraph'.
+  // &-paragraph {
+  //   // Extracting the value of map using 'map-get'
+  //   font-weight: map-get($font-weights, 'bold');
+
+  //   &:hover {
+  //     color: pink;
+  //   }
+  // }
+  // But code above won't be parsed as '.main .main-paragraph'. To do that use this.
+  // #{&}-paragraph {
+  //   font-weight: weights(bold);
+
+  //   &:hover {
+  //     color: pink;
+  //   }
+  // }
+
+  #{&}-paragraph1 {
+    font-weight: weights(bold);
+
+    &:hover {
+      color: pink;
+    }
+  }
+  // Extending from other set of rules.
+  #{&}-paragraph2 {
+    @extend .main-paragraph1;
+    // Replacing the extended rules. The behavior is all the same with normal CSS flow.
+    &:hover {
+      color: $accent-color;
+    }
+  }
+
+  // We can also include a media mixin from within a block so that it refers to this ~
+  // ~ particular block.
+  @include mobile {
+    flex-direction: column;
+  }
+}
+
+.light {
+  // It's fine to only provide the real value instead of providing the parameter name ~
+  // ~ alongside it. It's used to make it more meaningful and easily understandable.
+  @include light($light-theme: true);
+}

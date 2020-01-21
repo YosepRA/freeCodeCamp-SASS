@@ -1,0 +1,41 @@
+$primary-color: #272727;
+// $primary-color: white;
+$secondary-color: #ff652f;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin transition-ease {
+  transition: all 500ms ease-out;
+}
+
+// It will most likely be used against the primary color. If the background is dark, ~
+// ~ then it will return a light color for the text. And otherwise, it will return ~
+// ~ a dark color if the background is bright.
+@function set-text-color($color) {
+  // Checking the lightness of given color and return a value based on that.
+  @if (lightness($color) > 40%) {
+    @return black;
+  } @else {
+    @return white;
+  }
+}
+
+@mixin media-md {
+  @media screen and (min-width: 768px) {
+    @content;
+  }
+}
+@mixin media-lg {
+  @media screen and (min-width: 1024px) {
+    @content;
+  }
+}
+@mixin media-xl {
+  @media screen and (min-width: 1600px) {
+    @content;
+  }
+}
